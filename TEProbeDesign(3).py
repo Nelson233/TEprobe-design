@@ -1,13 +1,17 @@
 # -*- coding: utf-8 -*-
 """
+Guideline for the installation is available  the website:https://docs.nupack.org/start/
+Operation system：Mac/Linux operating systems or on the Linux subsystem of Windows 10/11
 
-@author: 
+Users should update DNA_a1 and DNA_a2 to be the SNV-containing input RNA sequence and SNV-lacking input RNA sequence 
 """
 
 from nupack import *
 
 
 def CalcEnergy(DNA_a1, DNA_a2, CutIndex=0):
+    
+#Construction of TEprobes with toeholds
     Toehold_rec = 'GATAGGC'
     
     Toehold_block = 'CCCTATC'
@@ -21,7 +25,8 @@ def CalcEnergy(DNA_a1, DNA_a2, CutIndex=0):
     DNA_c = DNA_a1 + Toehold_block
     
     DNA_c = DNA_c[CutIndex:]
-    
+
+#Specify each strand involved in TEprobes and target sequences    
     a1 = Strand(DNA_a1, name='a1')
     
     a2 = Strand(DNA_a2, name='a2')
@@ -35,7 +40,8 @@ def CalcEnergy(DNA_a1, DNA_a2, CutIndex=0):
     e = Complex([a2, b], name='e')
     
     f = Complex([b, c], name='f')
-    
+
+#Specify a physical model  
     model1 = Model(material='dna', ensemble='stacking', celsius=25, sodium=1.0, magnesium=0.0)
     
     set1 = ComplexSet(strands=[a1,b], complexes=SetSpec(max_size=2, include=[d]))
@@ -43,7 +49,8 @@ def CalcEnergy(DNA_a1, DNA_a2, CutIndex=0):
     set2 = ComplexSet(strands=[a2,b], complexes=SetSpec(max_size=2, include=[e]))
     
     set3 = ComplexSet(strands=[b,c], complexes=SetSpec(max_size=2, include=[f]))
-    
+     
+#Calculate the free energy  
     complex_results1 = complex_analysis(complexes=set1, model=model1, compute=['mfe'])
     
     complex_results2 = complex_analysis(complexes=set2, model=model1, compute=['mfe'])
@@ -122,7 +129,7 @@ if __name__ == '__main__':
         for idx in range(10):
             print("NO.{} Block: {}".format(idx+1, DNA_c[idx:]))
         
-        print('\nRec: {}\n'.format(DNA_b))
+        print('\nRec: {}\n'.format(DNA_b)) #Output TEprobe candidates
 
         
     else:
